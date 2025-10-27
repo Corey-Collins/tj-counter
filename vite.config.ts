@@ -5,5 +5,5 @@ export default defineConfig({
     plugins: [
         tailwindcss(),
     ],
-    // base: '/tj-counter/'
+    base: '/tj-counter/'
 })
