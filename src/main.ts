@@ -4,30 +4,37 @@ import './style.css'
 const cardRanks = [
   'Ace', '2', '3', '4', '5', '6', '7',
   '8', '9', '10', 'Jack', 'Queen', 'King'
-];
+] as const;
+
+type CountsArray = number[];
 
 // Load counts from localStorage, or default to 0
-function loadCounts() {
+function loadCounts(): CountsArray {
   const saved = localStorage.getItem('cardCounts');
   if (saved) {
     try {
       const parsed = JSON.parse(saved);
       // If the number of ranks changes, fallback to zeros
-      if (Array.isArray(parsed) && parsed.length === cardRanks.length) return parsed;
-    } catch { /* ignore */ }
+      if (Array.isArray(parsed) && parsed.length === cardRanks.length) return parsed as CountsArray;
+    } catch {
+      // ignore
+    }
   }
   return Array(cardRanks.length).fill(0);
 }
+
 // Save counts to localStorage
-function saveCounts() {
+function saveCounts(): void {
   localStorage.setItem('cardCounts', JSON.stringify(counts));
 }
 
-let counts = loadCounts();
+let counts: CountsArray = loadCounts();
 
-const cardList = document.getElementById('card-list');
+const cardList = document.getElementById('card-list') as HTMLElement;
+if (!cardList) throw new Error("Missing #card-list element");
 
-function render() {
+// Render UI
+function render(): void {
   cardList.innerHTML = '';
   counts.forEach((count, idx) => {
     const rank = cardRanks[idx];
@@ -49,26 +56,33 @@ function render() {
 }
 
 // Click handling (event delegation)
-cardList.addEventListener('click', (e) => {
-  const idx = parseInt(e.target.dataset.idx);
-  if (e.target.classList.contains('incr')) {
+cardList.addEventListener('click', (e: MouseEvent) => {
+  const target = e.target as HTMLElement;
+  const idxAttr = target.dataset?.idx;
+  if (typeof idxAttr === 'undefined') return;
+  const idx = parseInt(idxAttr, 10);
+  if (Number.isNaN(idx)) return;
+
+  if (target.classList.contains('incr')) {
     counts[idx]++;
     saveCounts();
     render();
-  } else if (e.target.classList.contains('decr')) {
+  } else if (target.classList.contains('decr')) {
     if (counts[idx] > 0) {
       counts[idx]--;
       saveCounts();
       render();
     }
-  } else if (e.target.classList.contains('reset')) {
+  } else if (target.classList.contains('reset')) {
     counts[idx] = 0;
     saveCounts();
     render();
   }
 });
 
-document.getElementById('reset-all').addEventListener('click', () => {
+const resetAllBtn = document.getElementById('reset-all');
+if (!resetAllBtn) throw new Error("Missing #reset-all element");
+resetAllBtn.addEventListener('click', () => {
   counts = Array(cardRanks.length).fill(0);
   saveCounts();
   render();
