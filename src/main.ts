@@ -39,15 +39,15 @@ function render(): void {
   counts.forEach((count, idx) => {
     const rank = cardRanks[idx];
     const row = document.createElement('div');
-    row.className = 'flex items-center justify-between bg-white rounded-lg shadow p-3';
+    row.className = 'flex items-center justify-between bg-white rounded-lg shadow p-0.5';
     row.innerHTML = `
       <div class="flex items-center gap-2">
         <span class="text-blue-600 font-bold text-lg w-12">${rank}</span>
       </div>
-      <div class="flex items-center gap-2">
-        <button class="decr px-3 py-1 bg-red-200 rounded text-xl font-bold disabled:opacity-40" ${count===0?'disabled':''} data-idx="${idx}">-</button>
-        <span class="min-w-[2.5rem] text-center font-semibold text-lg">${count}</span>
-        <button class="incr px-3 py-1 bg-green-200 rounded text-xl font-bold" data-idx="${idx}">+</button>
+      <div class="flex items-center gap-2 text-sm">
+        <button class="decr px-3 py-1 bg-red-200 rounded font-bold disabled:opacity-40" ${count===0?'disabled':''} data-idx="${idx}">-</button>
+        <span class="min-w-[2.5rem] text-center font-semibold">${count}</span>
+        <button class="incr px-3 py-1 bg-green-200 rounded font-bold mr-10" data-idx="${idx}">+</button>
         <button class="reset px-2 py-1 bg-yellow-200 rounded text-xs font-medium" data-idx="${idx}">Reset</button>
       </div>
     `;
