@@ -53,6 +53,17 @@ function render(): void {
     `;
     cardList.appendChild(row);
   });
+  const total = Array.isArray(counts[0]) // 2D?
+    ? counts.flat().reduce((a, b) => a + b, 0)
+    : counts.reduce((a, b) => a + b, 0);
+
+  const totalRow = document.createElement('div');
+  totalRow.className = 'flex items-center justify-between bg-blue-100 rounded-lg shadow p-3 font-bold text-blue-700 mt-2';
+  totalRow.innerHTML = `
+    <span class="text-lg">Total Cards</span>
+    <span class="text-lg">${total}</span>
+  `;
+  cardList.appendChild(totalRow)
 }
 
 // Click handling (event delegation)
